@@ -1,0 +1,37 @@
+version: '3.7'
+
+services:
+  server-nodejs-1:
+    build:
+      context: ./server-nodejs-1
+      dockerfile: Dockerfile
+    container_name: server-nodejs-1
+    networks:
+      - network-load-balancer
+
+
+  server-nodejs-2:
+    build:
+      context: ./server-nodejs-2
+      dockerfile: Dockerfile
+    container_name: server-nodejs-2
+    networks:
+      - network-load-balancer
+      
+
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    container_name: nginx
+    ports:
+      - "8080:80"
+    networks:
+      - network-load-balancer
+    depends_on:
+      - server-nodejs-1
+      - server-nodejs-2
+
+networks:
+  network-load-balancer:
+    driver: bridge
